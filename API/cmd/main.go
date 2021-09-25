@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/bjs3118/HackZurich2921/edit/main/API"
+	"github.com/bjs3118/HackZurich2921/API"
 	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 )
