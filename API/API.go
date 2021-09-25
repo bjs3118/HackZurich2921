@@ -1,4 +1,4 @@
-package server
+package API
 
 import (
 	"context"
@@ -10,13 +10,15 @@ import (
 )
 
 type HttpServer struct {
+	db     DB
 	router *chi.Mux
 	logger *zap.Logger
 }
 
-func OpenHttpServer(ctx context.Context, logger *zap.Logger, router *chi.Mux) *HttpServer {
+func OpenHttpServer(ctx context.Context, logger *zap.Logger, router *chi.Mux, db *SQLiteDB) *HttpServer {
 
 	h := &HttpServer{
+		db:     db,
 		router: router,
 		logger: logger,
 	}
@@ -24,20 +26,24 @@ func OpenHttpServer(ctx context.Context, logger *zap.Logger, router *chi.Mux) *H
 	return h
 }
 
-func (h *HttpServer) Serve(ctx context.Context, port string, certFileName string, keyFileName string) error {
+func (h *HttpServer) Serve(ctx context.Context, port string) error {
 	if err := h.routes(ctx); err != nil {
 		return fmt.Errorf("server: http_server: routes failed: %w", err)
 	}
 
 	portStr := ":" + port
 
-	if err := http.ListenAndServeTLS(portStr, certFileName, keyFileName, h.router); err != nil {
+	if err := http.ListenAndServe(portStr, h.router); err != nil {
 		return fmt.Errorf("server: http_server: http.ListenAndServe failed: %w", err)
 	}
 	return nil
 }
 
 func (h *HttpServer) Close() error {
+
+	if err := h.db.Close(); err != nil {
+		return fmt.Errorf("server: http_server: failed to close db: %w", err)
+	}
 
 	return nil
 }

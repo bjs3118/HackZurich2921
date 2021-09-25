@@ -1,5 +1,4 @@
-module 	github.com/bjs3118/HackZurich2921/API
-
+module github.com/bjs3118/HackZurich2921/tree/main/API
 
 go 1.16
 

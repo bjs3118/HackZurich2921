@@ -1,4 +1,4 @@
-package server
+package API
 
 import (
 	"context"
@@ -13,6 +13,7 @@ func allowOriginFunc(r *http.Request, origin string) bool {
 	// Allow all without checking origin
 	return true
 }
+
 func (h *HttpServer) routes(ctx context.Context) error {
 
 	// General middleware
@@ -27,8 +28,11 @@ func (h *HttpServer) routes(ctx context.Context) error {
 
 	// Public routes
 	h.router.Group(func(r chi.Router) {
-		r.Get("/test", h.test)
-	})
+		// Get
+		//r.Get("/connect", h.connect)
 
+		//r.Post("/speed", h.speed)
+
+	})
 	return nil
 }
