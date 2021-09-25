@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/bjs3118/HackZurich2921/API"
 	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 )
@@ -15,7 +14,7 @@ func main() {
 
 	fmt.Println("Loading Server")
 
-	var httpPort = flag.String("httpPort", "3000", "Port for serving http server")
+	var httpPort = flag.String("httpPort", ":8080", "Port for serving http server")
 	var httpServerTLSCertFileName = flag.String("httpServerTLSCertFileName", "cert/server.crt", "File path of TLS HTTP server certificate")
 	var httpServerTLSKeyFileName = flag.String("httpServerTLSKeyFileName", "cert/server.key", "File path of TLS HTTP server key")
 	var serverDBFilePath = flag.String("db", "serverDB.db", "SQLite DB file path")
@@ -45,7 +44,7 @@ func main() {
 
 	r := chi.NewRouter()
 
-	httpServer := server.OpenHttpServer(ctx, logger, r, serverDB, mqttClient)
+	httpServer := server.OpenHttpServer(ctx, logger, r, serverDB)
 	defer httpServer.Close()
 
 	logger.Info("server: opened http server")
@@ -53,6 +52,4 @@ func main() {
 	if err := httpServer.Serve(ctx, *httpPort, *httpServerTLSCertFileName, *httpServerTLSKeyFileName); err != nil {
 		logger.Fatal("server: failed to serve http server", zap.Error(err))
 	}
-}
-
 }
